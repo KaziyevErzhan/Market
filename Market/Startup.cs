@@ -11,6 +11,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
+using Market.Models;
 
 namespace Market
 {
@@ -24,10 +26,15 @@ namespace Market
         public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
+        // „тобы задействовать контроллеры, в методе ConfigureServices() вызываетс€ метод services.AddControllers().
         public void ConfigureServices(IServiceCollection services)
         {
+            string con = "Server=(localdb)\\mssqllocaldb;Database=usersdbstore;Trusted_Connection=True;";
+            //”станавливаем контекст данных
+            services.AddDbContext<BooksContext>(options => options.UseSqlServer(con));
 
-            services.AddControllers();
+            services.AddControllers(); // используем контроллеры без представлений
+
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Market", Version = "v1" });
@@ -35,6 +42,17 @@ namespace Market
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+
+        //public void Configure(IApplicationBuilder app)
+        //{
+        //    app.UseDeveloperExceptionPage();
+        //    app.UseRouting();
+        //    app.UseEndpoints(endpoints =>
+        //    {
+        //        endpoints.MapControllers(); // подключаем маршрутизацию на контроллеры
+        //    });
+        //}
+
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
